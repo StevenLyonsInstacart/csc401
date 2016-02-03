@@ -2,6 +2,12 @@ import csv
 count = 0
 tweetNum=0
 tweets = []
+import NLPlib
+
+tagger = NLPlib.NLPlib()
+symbols = ['!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '//']
+html = ['&#32', '&#33', '&#34', '&#35', '&#36', '&#37', '&#38', '&#39', '&#40', '&#41', '&#42','&#43', '&#44', '&#45', '&#46', '&#47'  ]
+
 
 def check_abbrev(word):
     f = open('/u/cs401/Wordlists/abbrev.english', 'r')
@@ -10,15 +16,25 @@ def check_abbrev(word):
             return True
         return False
     f.close()
-
+    
 def sanitize(text):
     newText = []
     for word in text:
         if word:
-            if word[0] == '@' or word[0] == '#':
-                word = word[1:]
-            newText.append(word)
-    return newText
+            if "www" in word or "http" in word:
+                word = ""
+            else:
+                if word[0] == '@' or word[0] == '#':
+                    word = word[1:]
+                if word in html:
+                    word = symbols[html.find(word)]
+                newText.append(word)
+    tags = tagger.tag(newText)
+    final = []
+    for index in range(0,len(tags)):
+        final.append(newText[index]+"/"+tags[index])
+    return final
+
 
 def own_line(text):
     #run through abbrev.english to ensure these don't cause a new line
