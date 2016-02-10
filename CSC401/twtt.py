@@ -16,6 +16,14 @@ def check_abbrev(word):
             return True
         return False
     f.close()
+
+def punctuation_counter(word):
+    count = 0
+    for i in word:
+        if i == '!' or i == '?' or i == '.':
+            count += 1
+    return count
+
     
 def sanitize(text):
     newText = []
@@ -56,20 +64,29 @@ def own_line(text):
     return newText 
 
 def punctuation_separator(text):
-    #append a space before a clitic or a piece of punctuation
-    #for end of sentence punctuation, check to see if there are
-    #multiple uses of the same thing (i.e.)
+    #look at last character in word. If it is a piece of punctuation,cycle back and see when
+    #the punctuation stops by comparing the next punc to the current punc. Then return the
+    #number of pieces of punctuation
+
     newText = []
     for word in text:
         if len(word) > 2:
-            if word[-1] == '!' or word[-1] == '?' or word[-1] == '.' or word[-1] == "'": 
-                temp = word.split(word[-1])
-                newText.append(temp[0])
+            if punctuation_counter(word) > 0:
+                temp = word[0:-(punctuation_counter(word))]
+                newText.append(temp)
+                newText.append(word[-(punctuation_counter(word))])
+            elif word[-1] == "'":
+                temp = word[0:-2]
+                newText.append(temp)
                 newText.append(word[-1])
-            if word[-2] == "'":
-                temp = word.split(word[-2])
-                newText.append(temp[0])
-                newText.append(word[-2:])
+            elif word[(-(punctuation_counter(word))-2)] == "'":
+                temp = word[0:(-(punctuation_counter(word))-3)]
+                newText.append(temp)
+                newText.append(word[(-(punctuation_counter(word))-2)])
+            # if word[-2] == "'":
+            #     temp = word.split(word[-2])
+            #     newText.append(temp[0])
+            #     newText.append(word[-2:])
         newText.append(word)
     return newText     
 
@@ -91,4 +108,5 @@ with open('/u/cs401/A1/tweets/training.1600000.processed.noemoticon.csv', 'rb') 
         tweet[1] = own_line(tweet[1])
         tweet[1] = punctuation_separator(tweet[1])
         print(tweet)
+    print(punctuation_counter("hello!!!!!"))
     print("done")
