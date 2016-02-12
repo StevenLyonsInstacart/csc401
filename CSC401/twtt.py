@@ -93,9 +93,6 @@ def punctuation_separator(text):
                 newText.append(temp[1])
                 appended = True
 
-
-
-
         if not appended:
             newText.append(word)
 
