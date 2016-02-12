@@ -8,9 +8,9 @@ import sys
 
 print (sys.argv)
 tagger = NLPlib.NLPlib()
-symbols = ['!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '//']
 html = ['&#32', '&#33', '&#34', '&#35', '&#36', '&#37', '&#38', '&#39', '&#40', '&#41', '&#42','&#43', '&#44', '&#45', '&#46', '&#47'  ]
-
+symbols = ['<', '>', '"', '&', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '//']
+altHtml = ['&lt;', '&gt;', '&quot;', '&amp;', '&#36', '&#37', '&#38', '&#39', '&#40', '&#41', '&#42','&#43', '&#44', '&#45', '&#46', '&#47'  ]
 #helper functions
 def check_abbrev(word):
     f = open('/u/cs401/Wordlists/abbrev.english', 'r')
@@ -36,8 +36,11 @@ def sanitize(text):
             else:
                 if word[0] == '@' or word[0] == '#':
                     word = word[1:]
-                if word in html:
-                    word = symbols[html.find(word)]
+                for i in range (0, 4):
+                    a = word
+                    word = word.replace(altHtml[i], symbols[i] )
+                    if a != word:
+                        print word
                 newText.append(word)
     tags = tagger.tag(newText)
     final = []
@@ -117,7 +120,7 @@ with open(sys.argv[1], 'rb') as csvfile:
         tweet[1] = own_line(tweet[1])
         tweet[1] = punctuation_separator(tweet[1])
         tweet[1] = sanitize(tweet[1])
-        print(fullSentence)
+        #print(fullSentence)
         test.write("<A="+str(tweet[0])+">\n")
         if tweet[1]:
             if tweet[1][-1] == "\n/NN":
