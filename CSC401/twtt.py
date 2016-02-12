@@ -24,7 +24,6 @@ def punctuation_counter(word):
             count += 1
     return count
 
-    
 def sanitize(text):
     newText = []
     for word in text:
@@ -37,12 +36,11 @@ def sanitize(text):
                 if word in html:
                     word = symbols[html.find(word)]
                 newText.append(word)
-    return newText
-    # tags = tagger.tag(newText)
-    # final = []
-    # for index in range(0,len(tags)):
-    #     final.append(newText[index]+"/"+tags[index])
-    # return final
+    tags = tagger.tag(newText)
+    final = []
+    for index in range(0,len(tags)):
+         final.append(newText[index]+"/"+tags[index])
+    return final
 
 
 def own_line(text):
@@ -61,7 +59,10 @@ def own_line(text):
                     newText.append(word)
             else:
                 newText.append(word)
+        else:
+            newText.append(word)
     return newText 
+
 
 def punctuation_separator(text):
     #look at last character in word. If it is a piece of punctuation,cycle back and see when
@@ -69,25 +70,30 @@ def punctuation_separator(text):
     #number of pieces of punctuation
 
     newText = []
+
     for word in text:
-        if len(word) > 2:
-            if punctuation_counter(word) > 0:
-                temp = word[0:-(punctuation_counter(word))]
-                newText.append(temp)
-                newText.append(word[-(punctuation_counter(word))])
-            elif word[-1] == "'":
-                temp = word[0:-2]
-                newText.append(temp)
-                newText.append(word[-1])
-            elif word[(-(punctuation_counter(word))-2)] == "'":
-                temp = word[0:(-(punctuation_counter(word))-3)]
-                newText.append(temp)
-                newText.append(word[(-(punctuation_counter(word))-2)])
-            # if word[-2] == "'":
-            #     temp = word.split(word[-2])
-            #     newText.append(temp[0])
-            #     newText.append(word[-2:])
-        newText.append(word)
+        appended = False
+
+        if "'" in word:
+            temp = ["",""]
+            temp[0] = word[0:word.find("'")]
+            temp[1] = word[word.find("'"):]
+            newText.append(temp[0])
+            appended = True
+            word = temp[1]
+
+        if len(word) > 1:
+            if word[-1] == '!' or word[-1] == '?' or word[-1] == '.' or word[-1] == "'":
+                temp = ["",""]
+                temp[0] = word[:-punctuation_counter(word)]
+                temp[1] = word[-punctuation_counter(word):]
+                newText.append(temp[0])
+                newText.append(temp[1])
+                appended = True
+
+        if not appended:
+            newText.append(word)
+
     return newText     
 
 
@@ -102,11 +108,23 @@ with open('/u/cs401/A1/tweets/training.1600000.processed.noemoticon.csv', 'rb') 
             tweetNum+= 1
 
         count = count + 1
+    test = open("test.twt", 'w')
     for tweet in tweets:
+        fullSentence = tweet[:]
         tweet[1] = tweet[1].split(" ")
-        tweet[1] = sanitize(tweet[1])
         tweet[1] = own_line(tweet[1])
         tweet[1] = punctuation_separator(tweet[1])
-        print(tweet)
-    print(punctuation_counter("hello!!!!!"))
+        tweet[1] = sanitize(tweet[1])
+        print(fullSentence)
+        test.write("<A="+str(tweet[0])+">\n")
+        if tweet[1]:
+            if tweet[1][-1] == "\n/NN":
+                tweet[1] = tweet[1][:-1]
+        for word in tweet[1]:
+            if word == "\n/NN":
+                word = "\n"
+            test.write(word)
+            test.write(" ")
+        test.write("\n")
+    test.close()
     print("done")
