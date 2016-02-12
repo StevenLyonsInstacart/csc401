@@ -112,7 +112,7 @@ with open(sys.argv[1], "r") as twt:
     tweet = ""
     polarity = 0
     #Schema
-    outFile.write("@relation test\n")
+    outFile.write("@relation train\n")
     outFile.write("\n")
     outFile.write("@attribute firstPersonPronouns numeric\n")
     outFile.write("@attribute secondPersonPronouns numeric\n")
@@ -134,6 +134,7 @@ with open(sys.argv[1], "r") as twt:
     outFile.write("@attribute lengthOfSentence numeric\n")
     outFile.write("@attribute lengthOfToken numeric\n")
     outFile.write("@attribute numberOfSentences numeric\n")
+    outFile.write("@attribute score {0,4}\n")
     outFile.write("\n")
     outFile.write("@data\n")
     if len(sys.argv) < 4:
