@@ -106,10 +106,14 @@ groupID = int(sys.argv[2])
 with open(sys.argv[1], 'rb') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
-        if (count>(groupID*5500) and count<((groupID+1)*5500)):
-            tweets.append([row[0], row[5][1:-1]])
-            tweetNum+= 1
-        if (count>800000 + (groupID*5500) and count<(800000 + (groupID+1)*5500)):
+        if len(sys.argv) < 5:
+            if (count>(groupID*5500) and count<((groupID+1)*5500)):
+                tweets.append([row[0], row[5][1:-1]])
+                tweetNum+= 1
+            if (count>800000 + (groupID*5500) and count<(800000 + (groupID+1)*5500)):
+                tweets.append([row[0], row[5][1:-1]])
+                tweetNum+= 1
+        else:
             tweets.append([row[0], row[5][1:-1]])
             tweetNum+= 1
 
