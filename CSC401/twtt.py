@@ -71,9 +71,10 @@ def own_line(text):
 
 
 def punctuation_separator(text):
-    #append a space before a clitic or a piece of punctuation
-    #for end of sentence punctuation, check to see if there are
-    #multiple uses of the same thing (i.e.)
+    #look at last character in word. If it is a piece of punctuation,cycle back and see when
+    #the punctuation stops by comparing the next punc to the current punc. Then return the
+    #number of pieces of punctuation
+
     newText = []
 
     for word in text:

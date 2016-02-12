@@ -1,5 +1,6 @@
 import sys
 
+
 def partsOfSpeech (tweet, list):
     total = 0
     for elem in list:
@@ -59,17 +60,25 @@ slang = [" smh ",  " fwb ",  " lmfao ",  " lmao ",  " lms ",  " tbh ",  " ro ", 
          " ym ", " ur ", " u ", " sol "]
 
 
+futureTenseUntagged = [" gonna ", " 'll "]
+futureTenseTweet = [" will/MD", "going/VBG to/TO"]
+
+
 
 def arffIt (tweet, polarity, twt):
 
     unTagged  = unTag(tweet)
     regular = specialUnTag(tweet)
+
     #Persons
     twt.write(str(findWords(unTagged, firstPerson))+", ")
     twt.write(str(findWords(unTagged, secondPerson))+", ")
     twt.write(str(findWords(unTagged, thirdPerson))+", ")
     twt.write(str(partsOfSpeech(tweet, ["/CC "]))+", ")
     twt.write(str(partsOfSpeech(tweet, ["/VBD "]))+", ")
+    twt.write(str(findWords(unTagged, futureTenseUntagged) + findWords(tweet, futureTenseTweet))+", ")
+
+
     #Symbols
     twt.write(str(findWords(unTagged, [" , "]))+", ")
     twt.write(str(findWords(unTagged, [" : ", " ; "]))+", ")
@@ -78,6 +87,7 @@ def arffIt (tweet, polarity, twt):
     twt.write(str(findWords(unTagged, [" ... "]))+", ")
 
     #PoS
+
     twt.write(str(partsOfSpeech(tweet, ["/NN ", "/NNS "]))+", ")
     twt.write(str(partsOfSpeech(tweet, ["/NNP ", "/NNPS "]))+", ")
     twt.write(str(partsOfSpeech(tweet, ["/RB ", "/RBR ", "/RBS "]))+", ")
@@ -88,6 +98,8 @@ def arffIt (tweet, polarity, twt):
 
 
     #Still missing Future tense, Slang, maybe more
+    #Future Tense
+
 
     twt.write(str(float(len(unTagged.split(" ")) -1 -float(unTagged.count("\n")) ) / float(unTagged.count("\n")))+", ")   #sentences
     twt.write(str(tokenLen(unTagged))+", ")
@@ -96,9 +108,34 @@ def arffIt (tweet, polarity, twt):
     return 1
 
 outFile = open(sys.argv[2], 'w')
-with  open(sys.argv[1], "r") as twt:
+with open(sys.argv[1], "r") as twt:
     tweet = ""
     polarity = 0
+    #Schema
+    outFile.write("@relation test\n")
+    outFile.write("\n")
+    outFile.write("@attribute firstPersonPronouns numeric\n")
+    outFile.write("@attribute secondPersonPronouns numeric\n")
+    outFile.write("@attribute thirdPersonPronouns numeric\n")
+    outFile.write("@attribute coordinatingConjunctions numeric\n")
+    outFile.write("@attribute pastTenseVerbs numeric\n")
+    outFile.write("@attribute futureTenseVerbs numeric\n")
+    outFile.write("@attribute commas numeric\n")
+    outFile.write("@attribute colonsAndSemicolons numeric\n")
+    outFile.write("@attribute dashes numeric\n")
+    outFile.write("@attribute parentheses numeric\n")
+    outFile.write("@attribute ellipses numeric\n")
+    outFile.write("@attribute commonNouns numeric\n")
+    outFile.write("@attribute properNouns numeric\n")
+    outFile.write("@attribute adverbs numeric\n")
+    outFile.write("@attribute whWords numeric\n")
+    outFile.write("@attribute slang numeric\n")
+    outFile.write("@attribute upperCaseWords numeric\n")
+    outFile.write("@attribute lengthOfSentence numeric\n")
+    outFile.write("@attribute lengthOfToken numeric\n")
+    outFile.write("@attribute numberOfSentences numeric\n")
+    outFile.write("\n")
+    outFile.write("@data\n")
     if len(sys.argv) < 4:
         for line in twt:
             if line == '<A="4">\n':
@@ -133,6 +170,8 @@ with  open(sys.argv[1], "r") as twt:
                 negNum +=1
             else:
                 tweet+= line
+
+
 
 
 
