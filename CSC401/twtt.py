@@ -3,7 +3,10 @@ count = 0
 tweetNum=0
 tweets = []
 import NLPlib
+import sys
 
+
+print (sys.argv)
 tagger = NLPlib.NLPlib()
 symbols = ['!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '//']
 html = ['&#32', '&#33', '&#34', '&#35', '&#36', '&#37', '&#38', '&#39', '&#40', '&#41', '&#42','&#43', '&#44', '&#45', '&#46', '&#47'  ]
@@ -98,19 +101,19 @@ def punctuation_separator(text):
 
     return newText     
 
-
-with open('/u/cs401/A1/tweets/training.1600000.processed.noemoticon.csv', 'rb') as csvfile:
+groupID = int(sys.argv[2])
+with open(sys.argv[1], 'rb') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
-        if (count>44000 and count<49500):
+        if (count>(groupID*5500) and count<((groupID+1)*5500)):
             tweets.append([row[0], row[5][1:-1]])
             tweetNum+= 1
-        if 844000 < count < 849500:
+        if (count>800000 + (groupID*5500) and count<(800000 + (groupID+1)*5500)):
             tweets.append([row[0], row[5][1:-1]])
             tweetNum+= 1
 
         count = count + 1
-    test = open("test.twt", 'w')
+    test = open(sys.argv[3], 'w')
     for tweet in tweets:
         fullSentence = tweet[:]
         tweet[1] = tweet[1].split(" ")
