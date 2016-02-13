@@ -112,7 +112,7 @@ with open(sys.argv[1], "r") as twt:
     tweet = ""
     polarity = 0
     #Schema
-    outFile.write("@relation train\n")
+    outFile.write("@relation test\n")
     outFile.write("\n")
     outFile.write("@attribute firstPersonPronouns numeric\n")
     outFile.write("@attribute secondPersonPronouns numeric\n")
@@ -134,7 +134,6 @@ with open(sys.argv[1], "r") as twt:
     outFile.write("@attribute lengthOfSentence numeric\n")
     outFile.write("@attribute lengthOfToken numeric\n")
     outFile.write("@attribute numberOfSentences numeric\n")
-    outFile.write("@attribute score {0,4}\n")
     outFile.write("\n")
     outFile.write("@data\n")
     if len(sys.argv) < 4:
@@ -151,34 +150,52 @@ with open(sys.argv[1], "r") as twt:
                 tweet = ""
             else:
                 tweet+= line
-    else:
+    elif len(sys.argv) == 4:
+        first = True
         posNum = 0
         negNum = 0
-        count = 0
         for line in twt:
-            print(count)
             print(posNum)
-            if line == '<A="4">\n' or line == '<A="0">\n':
-                count+=1
-            if line == '<A="4">\n' and posNum < int(sys.argv[3]) and count + 5500 >= sys.argv[4]:
+            print(sys.argv[3])
+            if line == '<A="4">\n' and posNum < int(sys.argv[3]):
+                if first:
+                    first = False
+                    tweet = ""
                 if tweet:
                     arffIt(tweet, polarity, outFile)
                 polarity = 4
                 tweet = ""
                 posNum+=1
-                count+=1
-                print(count)
-            elif line == '<A="0">\n' and negNum < int(sys.argv[3]) and count >= sys.argv[4]:
+            elif line == '<A="0">\n' and negNum < int(sys.argv[3]):
                 if tweet:
                     arffIt(tweet, polarity, outFile)
                 polarity = 0
                 tweet = ""
                 negNum +=1
-                count+=1
             else:
                 tweet+= line
-            # print(posNum)
-            # print(negNum)
-
-
+    else:
+        first = True
+        posNum = 0
+        negNum = 0
+        for line in twt:
+            print(posNum)
+            print(sys.argv[3])
+            if line == '<A="4">\n' and posNum < int(sys.argv[3]):
+                if first:
+                    first = False
+                    tweet = ""
+                if tweet:
+                    arffIt(tweet, polarity, outFile)
+                polarity = 4
+                tweet = ""
+                posNum+=1
+            elif line == '<A="0">\n' and negNum < int(sys.argv[3]):
+                if tweet:
+                    arffIt(tweet, polarity, outFile)
+                polarity = 0
+                tweet = ""
+                negNum +=1
+            else:
+                tweet+= line
 
