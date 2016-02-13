@@ -154,25 +154,31 @@ with open(sys.argv[1], "r") as twt:
     else:
         posNum = 0
         negNum = 0
+        count = 0
         for line in twt:
+            print(count)
             print(posNum)
-            print(sys.argv[3])
-            if line == '<A="4">\n' and posNum < int(sys.argv[3]):
+            if line == '<A="4">\n' or line == '<A="0">\n':
+                count+=1
+            if line == '<A="4">\n' and posNum < int(sys.argv[3]) and count + 5500 >= sys.argv[4]:
                 if tweet:
                     arffIt(tweet, polarity, outFile)
                 polarity = 4
                 tweet = ""
                 posNum+=1
-            elif line == '<A="0">\n' and negNum < int(sys.argv[3]):
+                count+=1
+                print(count)
+            elif line == '<A="0">\n' and negNum < int(sys.argv[3]) and count >= sys.argv[4]:
                 if tweet:
                     arffIt(tweet, polarity, outFile)
                 polarity = 0
                 tweet = ""
                 negNum +=1
+                count+=1
             else:
                 tweet+= line
-
-
+            # print(posNum)
+            # print(negNum)
 
 
 
