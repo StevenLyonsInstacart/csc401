@@ -15,9 +15,22 @@
 import csv
 import urllib
 import urllib2
+import unicodedata
+
+
 
 
 ###HELPER FUNCTIONS##########################
+
+
+def sanitize(tweet, num):
+	tweet = tweet.replace("\t", "")
+	tweet = tweet.replace("\n", "")
+	try:
+		tweet.decode('utf-8')
+	except UnicodeDecodeError:
+		tweet = "Not UTF"
+	return tweet
 
 def convert_training_csv_to_watson_csv_format(input_csv_name, group_id, output_csv_name): 
 	# Converts an existing training csv file. The output file should
@@ -62,12 +75,14 @@ def extract_subset_from_csv_file(input_csv_file, n_lines_to_extract, output_file
 	#		
 	# Returns:
 	#	None
-	with open(input_csv_name, 'rb') as csvfile:
+	with open(input_csv_file, 'rb') as csvfile:
 		output = open(output_file_prefix+''+str(n_lines_to_extract)+'.csv', 'w')
 		count = 0
 		csvreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+		print csvreader
 		for line in csvreader:
 			if (0 < count < n_lines_to_extract) or (5500 < count < 5500 + n_lines_to_extract):
+				line[5] = sanitize(line[5], line[0])
 				output.write(line[5].replace("\"", "")+", "+line[0].replace("\"", "")+"\n")
 			count+=1
 		csvfile.close()
@@ -117,7 +132,6 @@ def create_classifier(username, password, n, input_file_prefix='ibmTrain'):
 	return response
 	
 if __name__ == "__main__":
-	
 	### STEP 1: Convert csv file into two-field watson format
 	input_csv_name = '/u/cs401/A1/tweets/training.1600000.processed.noemoticon.csv'
 	
@@ -134,8 +148,8 @@ if __name__ == "__main__":
 	# you should make use of the following function call:
 	#
 	input_csv = output_csv_name
-	n_lines_to_extract = 500
-	extract_subset_from_csv_file(input_csv,n_lines_to_extract)
+	for n_lines_to_extract in [500,1000,2500]:
+		extract_subset_from_csv_file('training_11000_watson_style.csv',n_lines_to_extract)
 	
 	### STEP 3: Create the classifiers using Watson
 	
@@ -144,10 +158,10 @@ if __name__ == "__main__":
 	# 
 	#
 	# you should make use of the following function call
-	n = 500
-	username = 'steven.lyons@mail.utoronto.ca'
-	password = "elmo86ftw"
-	create_classifier(username, password, n, input_file_prefix='ibmTrain')
+	#n = 500
+	#username = 'steven.lyons@mail.utoronto.ca'
+	#password = ""
+	#create_classifier(username, password, n, input_file_prefix='ibmTrain')
 
 
 
