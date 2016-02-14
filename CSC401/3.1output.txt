@@ -1,3 +1,5 @@
+Our best classification algorithm was the naive Bayes with 192 (53.6313%) correctly classified instances, as shown below. Our next best was using the support vector machines (SVMs) with 188 (52.514%) correctly classified instances on test data. Our worst classification algorithm was therefore the decision trees with 186 (51.9553%) correctly classified instances on test data.
+
 
 Naive Bayes Classifier
 
