@@ -150,8 +150,8 @@ with open(sys.argv[1], "r") as twt:
                 tweet = ""
             else:
                 tweet+= line
-    else:
-        first  = True
+    elif len(sys.argv) == 4:
+        first = True
         posNum = 0
         negNum = 0
         for line in twt:
@@ -174,5 +174,28 @@ with open(sys.argv[1], "r") as twt:
                 negNum +=1
             else:
                 tweet+= line
-
+    else:
+        first = True
+        posNum = 0
+        negNum = 0
+        for line in twt:
+            print(posNum)
+            print(sys.argv[3])
+            if line == '<A="4">\n' and posNum < int(sys.argv[3]):
+                if first:
+                    first = False
+                    tweet = ""
+                if tweet:
+                    arffIt(tweet, polarity, outFile)
+                polarity = 4
+                tweet = ""
+                posNum+=1
+            elif line == '<A="0">\n' and negNum < int(sys.argv[3]):
+                if tweet:
+                    arffIt(tweet, polarity, outFile)
+                polarity = 0
+                tweet = ""
+                negNum +=1
+            else:
+                tweet+= line
 
