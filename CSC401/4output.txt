@@ -1,0 +1,32 @@
+In part 4, watson performed a lot better than WEKA. WEKA at it's best was performing
+around 55%, which is almost within the margin of error for a binary 
+classifier. Watson however performed in the 65-75% range, which show that it did
+learn how to differentiate tweets at a level that is much better than a coin flip.
+
+Watson performed better with more input data, going from a 65.6% success rate with only 500 cases, to a 72.7% success rate when having 2500 cases. If watson was able 
+to take in the whole 1.6 million tweet csv, I think it would have been able to predict
+with a success rate possibly in the 90's which would rival a human's capabilities to
+tell if a tweet is happy or sad. 
+
+Oddly, Watson was more confident when it was wrong but only by a slight amount. Although
+it's average confidence was in the middle, it still performed at a success rate 50% higher.
+
+OUTPUT:
+
+Accuracy for classifier : 500
+0.66573816156
+
+Confidence for classifier [correct, incorrect] : 500
+[0.4990598849443863, 0.5223832464114393]
+
+Accuracy for classifier : 1000
+0.682451253482
+
+Confidence for classifier : 1000
+[0.4803678634406275, 0.502074693677026]
+
+Accuracy for classifier : 2500
+0.727019498607
+
+Confidence for classifier : 2500
+[0.4927920157376357, 0.5062686728562905]
