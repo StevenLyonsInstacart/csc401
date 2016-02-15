@@ -64,7 +64,6 @@ futureTenseUntagged = [" gonna ", " 'll "]
 futureTenseTweet = [" will/MD", "going/VBG to/TO"]
 
 
-
 def arffIt (tweet, polarity, twt):
 
     unTagged  = unTag(tweet)
@@ -95,10 +94,6 @@ def arffIt (tweet, polarity, twt):
     #print regular.split(" ")
     twt.write(str(findWords(unTagged, slang))+", ")
     twt.write(str(numUpper(regular))+", ")
-
-
-    #Still missing Future tense, Slang, maybe more
-    #Future Tense
 
 
     twt.write(str(float(len(unTagged.split(" ")) -1 -float(unTagged.count("\n")) ) / float(unTagged.count("\n")))+", ")   #sentences
