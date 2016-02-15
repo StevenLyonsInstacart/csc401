@@ -38,7 +38,7 @@ def get_classifier_ids(username,password):
 	# Error Handling:
 	#	This function should throw an exception if the classifiers call fails for any reason
 	#
-	result = requests.get("https://gateway.watsonplatform.net/natural-language-classifier/api/v1/classifiers", auth=("7422dc1e-036c-4376-9410-c5aae79bed98", "O06Y0bsqbXIX") )
+	result = requests.get("https://gateway.watsonplatform.net/natural-language-classifier/api/v1/classifiers", auth=(username, password) )
 
 	unparsed = result.text.split(" ")
 	count = 0
@@ -72,12 +72,9 @@ def assert_all_classifiers_are_available(username, password, classifier_id_list)
 	#	It should throw an error if any classifier is NOT 'Available'
 	#
 	for url in classifier_id_list:
-		result = requests.get(url, auth=("7422dc1e-036c-4376-9410-c5aae79bed98", "O06Y0bsqbXIX") )
-		if  result.text.split("\n")[-2] != ''"7422dc1e-036c-4376-9410-c5aae79bed98"',  '"O06Y0bsqbXIX"'':
+		result = requests.get(url, auth=(username, password) )
+		if  result.text.split("\n")[-2] != '  "status_description" : "The classifier instance is now available and is ready to take classifier requests."':
 			return False
-
-	#TODO: Fill in this function
-	
 	return True
 
 def classify_single_text(username,password,classifier_id,text):
@@ -108,7 +105,7 @@ def classify_single_text(username,password,classifier_id,text):
 	# Error Handling:
 	#	This function should throw an exception if the classify call fails for any reason 
 	#
-	result = requests.get(classifier_id+"/classify?text="+text, auth=("7422dc1e-036c-4376-9410-c5aae79bed98", "O06Y0bsqbXIX") )
+	result = requests.get(classifier_id+"/classify?text="+text, auth=(username, password) )
 	lines = result.text.split("\n")
 	if "0" in lines[4]:
 		className = "0"
@@ -180,11 +177,10 @@ def classify_all_texts(username,password,input_csv_name):
 					   "1000": dicts2,
 					   "2500": dicts3}
 			for line in csvreader:
-				if (count<355):
-					dicts1.append(classify_single_text(username,password,ids[3],line[5]))
-					dicts2.append(classify_single_text(username,password,ids[4],line[5]))
-					dicts3.append(classify_single_text(username,password,ids[2],line[5]))
-				count+=1
+				dicts1.append(classify_single_text(username,password,ids[0],line[5]))
+				dicts2.append(classify_single_text(username,password,ids[1],line[5]))
+				dicts3.append(classify_single_text(username,password,ids[2],line[5]))
+
 		csvfile.close()
 		return results
 
@@ -228,12 +224,10 @@ def compute_accuracy_of_single_classifier(classifier_dict, input_csv_file_name):
 		correct = 0.0
 		total = 0.0
 		for line in csvfile:
-			if (total < 355):
-				score = str(line.split(",")[0]).replace("\"", "" )
-				print (str(classifier_dict[int(total)]['top_class'])[-1]+""+str(score))
-				if score == str(classifier_dict[int(total)]['top_class'])[-1]:
-					correct += 1.0
-				total+=1
+			score = str(line.split(",")[0]).replace("\"", "" )
+			if score == str(classifier_dict[int(total)]['top_class'])[-1]:
+				correct += 1.0
+			total+=1
 	csvfile.close()
 	
 	return correct/float(total)
@@ -281,26 +275,24 @@ def compute_average_confidence_of_single_classifier(classifier_dict, input_csv_f
 		incorrectTotal = 0.0
 		total = 0.0
 		for line in csvfile:
-			if (total < 355):
-				score = str(line.split(",")[0]).replace("\"", "" )
-				print (str(classifier_dict[int(total)]['top_class'])[-1]+""+str(score))
-				if score == str(classifier_dict[int(total)]['top_class'])[-1]:
-					confidences = classifier_dict[int(total)]['classes']
-					if confidences[0]['class_name'] == str(classifier_dict[int(total)]['top_class']):
-						correct += float(confidences[0]['confidence'])
-						correctTotal+=1
-					else:
-						correct += float(confidences[1]['confidence'])
-						correctTotal+=1
+			score = str(line.split(",")[0]).replace("\"", "" )
+			if score == str(classifier_dict[int(total)]['top_class'])[-1]:
+				confidences = classifier_dict[int(total)]['classes']
+				if confidences[0]['class_name'] == str(classifier_dict[int(total)]['top_class']):
+					correct += float(confidences[0]['confidence'])
+					correctTotal+=1
 				else:
-					confidences = classifier_dict[int(total)]['classes']
-					if confidences[0]['class_name'] == str(classifier_dict[int(total)]['top_class']):
-						incorrect += float(confidences[0]['confidence'])
-						incorrectTotal+=1
-					else:
-						incorrect += float(confidences[1]['confidence'])
-						incorrectTotal+=1
-				total+=1
+					correct += float(confidences[1]['confidence'])
+					correctTotal+=1
+			else:
+				confidences = classifier_dict[int(total)]['classes']
+				if confidences[0]['class_name'] == str(classifier_dict[int(total)]['top_class']):
+					incorrect += float(confidences[0]['confidence'])
+					incorrectTotal+=1
+				else:
+					incorrect += float(confidences[1]['confidence'])
+					incorrectTotal+=1
+			total+=1
 
 
 	csvfile.close()
@@ -312,21 +304,39 @@ def compute_average_confidence_of_single_classifier(classifier_dict, input_csv_f
 
 if __name__ == "__main__":
 
-	input_test_data = '<ADD FILE NAME HERE>'
-
-	ids = get_classifier_ids('"7422dc1e-036c-4376-9410-c5aae79bed98"',  '"O06Y0bsqbXIX"')
-	#assert_all_classifiers_are_available('"7422dc1e-036c-4376-9410-c5aae79bed98"',  '"O06Y0bsqbXIX"', ids)
-	print classify_single_text('"7422dc1e-036c-4376-9410-c5aae79bed98"',  '"O06Y0bsqbXIX"',ids[0],"Not so hungry anymore!")
-	dict = classify_all_texts('"7422dc1e-036c-4376-9410-c5aae79bed98"',  '"O06Y0bsqbXIX"',"/u/cs401/A1/tweets/testdata.manualSUBSET.2009.06.14.csv")
-	print compute_accuracy_of_single_classifier(dict['2500'], "/u/cs401/A1/tweets/testdata.manualSUBSET.2009.06.14.csv")
-	print compute_average_confidence_of_single_classifier(dict['2500'], "/u/cs401/A1/tweets/testdata.manualSUBSET.2009.06.14.csv")
+	input_test_data = '/u/cs401/A1/tweets/testdata.manualSUBSET.2009.06.14.csv'
+	accuracy = [0,0,0]
+	confidence = [[],[],[]]
+	username = "7422dc1e-036c-4376-9410-c5aae79bed98"
+	password = "O06Y0bsqbXIX"
+	ids = get_classifier_ids(username,  password)
 	#STEP 1: Ensure all 11 classifiers are ready for testing
+	if assert_all_classifiers_are_available(username,  password, ids):
+                #STEP 2: Test the test data on all classifiers
+		dict = classify_all_texts(username,  password, input_test_data)
+		count = 0
+		for classifier in ["500", '1000', "2500"]:
+			accuracy[count] = compute_accuracy_of_single_classifier(dict[classifier], input_test_data)
+			confidence[count] = compute_average_confidence_of_single_classifier(dict[classifier], input_test_data)
+			count+=1
+		count = 0
+		for classifier in ["500", '1000', "2500"]:
+                        #STEP 3: Compute the accuracy for each classifier
+			print("Accuracy for classifier : "+classifier)
+			print (str(accuracy[count])+"\n")
+			#STEP 4: Compute the confidence of each class for each classifier
+			print("Confidence for classifier : "+classifier)
+			print (str(confidence[count])+"\n")
+			count+=1
+	else:
+		print ("Not all machines trained")
+	
 
 	
-	#STEP 2: Test the test data on all classifiers
 	
-	#STEP 3: Compute the accuracy for each classifier
 	
-	#STEP 4: Compute the confidence of each class for each classifier
+	
+	
+	
 	
 	

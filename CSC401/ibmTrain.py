@@ -156,11 +156,9 @@ if __name__ == "__main__":
 	#TODO: Create all 11 classifiers using the csv files of the subsets produced in 
 	# STEP 2
 	# 
+	#For this part, I used the shell to start the classifier training
+	# 
 	#
-	# you should make use of the following function call
-	#n = 500
-	#username = 'steven.lyons@mail.utoronto.ca'
-	#password = ""
 	#create_classifier(username, password, n, input_file_prefix='ibmTrain')
 
 

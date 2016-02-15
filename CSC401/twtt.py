@@ -39,8 +39,6 @@ def sanitize(text):
                 for i in range (0, 4):
                     a = word
                     word = word.replace(altHtml[i], symbols[i] )
-                    if a != word:
-                        print word
                 newText.append(word)
     tags = tagger.tag(newText)
     final = []
@@ -138,3 +136,4 @@ with open(sys.argv[1], 'rb') as csvfile:
         test.write("\n")
     test.close()
     print("done")
+
