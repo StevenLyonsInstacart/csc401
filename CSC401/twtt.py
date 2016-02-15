@@ -131,6 +131,13 @@ with open(sys.argv[1], 'rb') as csvfile:
         for word in tweet[1]:
             if word == "\n/NN":
                 word = "\n"
+            #Bonus: pretty can also be used as an adjective when it follows a determiner. This will not add
+            #new bugs elsewhere, since "pretty" being used as an adjective will only follow "a" or "the". All
+            #other instances of "pretty" will therefore be left as adverbs.
+            if word == "pretty/RB":
+                getIndex = tweet[1].index(word)
+                if tweet[1][getIndex-1] == "a/DT" or tweet[1][getIndex-1] == "the/DT" or tweet[1][getIndex-1] == "A/DT" or tweet[1][getIndex-1] == "The/DT":
+                    word = "pretty/JJ"
             test.write(word)
             test.write(" ")
         test.write("\n")
