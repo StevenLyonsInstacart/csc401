@@ -180,11 +180,10 @@ def classify_all_texts(username,password,input_csv_name):
 					   "1000": dicts2,
 					   "2500": dicts3}
 			for line in csvreader:
-				if (count<355):
-					dicts1.append(classify_single_text(username,password,ids[3],line[5]))
-					dicts2.append(classify_single_text(username,password,ids[4],line[5]))
-					dicts3.append(classify_single_text(username,password,ids[2],line[5]))
-				count+=1
+				dicts1.append(classify_single_text(username,password,ids[0],line[5]))
+				dicts2.append(classify_single_text(username,password,ids[1],line[5]))
+				dicts3.append(classify_single_text(username,password,ids[2],line[5]))
+
 		csvfile.close()
 		return results
 
@@ -228,12 +227,10 @@ def compute_accuracy_of_single_classifier(classifier_dict, input_csv_file_name):
 		correct = 0.0
 		total = 0.0
 		for line in csvfile:
-			if (total < 355):
-				score = str(line.split(",")[0]).replace("\"", "" )
-				print (str(classifier_dict[int(total)]['top_class'])[-1]+""+str(score))
-				if score == str(classifier_dict[int(total)]['top_class'])[-1]:
-					correct += 1.0
-				total+=1
+			score = str(line.split(",")[0]).replace("\"", "" )
+			if score == str(classifier_dict[int(total)]['top_class'])[-1]:
+				correct += 1.0
+			total+=1
 	csvfile.close()
 	
 	return correct/float(total)
@@ -281,26 +278,25 @@ def compute_average_confidence_of_single_classifier(classifier_dict, input_csv_f
 		incorrectTotal = 0.0
 		total = 0.0
 		for line in csvfile:
-			if (total < 355):
-				score = str(line.split(",")[0]).replace("\"", "" )
-				print (str(classifier_dict[int(total)]['top_class'])[-1]+""+str(score))
-				if score == str(classifier_dict[int(total)]['top_class'])[-1]:
-					confidences = classifier_dict[int(total)]['classes']
-					if confidences[0]['class_name'] == str(classifier_dict[int(total)]['top_class']):
-						correct += float(confidences[0]['confidence'])
-						correctTotal+=1
-					else:
-						correct += float(confidences[1]['confidence'])
-						correctTotal+=1
+			score = str(line.split(",")[0]).replace("\"", "" )
+			print (str(classifier_dict[int(total)]['top_class'])[-1]+""+str(score))
+			if score == str(classifier_dict[int(total)]['top_class'])[-1]:
+				confidences = classifier_dict[int(total)]['classes']
+				if confidences[0]['class_name'] == str(classifier_dict[int(total)]['top_class']):
+					correct += float(confidences[0]['confidence'])
+					correctTotal+=1
 				else:
-					confidences = classifier_dict[int(total)]['classes']
-					if confidences[0]['class_name'] == str(classifier_dict[int(total)]['top_class']):
-						incorrect += float(confidences[0]['confidence'])
-						incorrectTotal+=1
-					else:
-						incorrect += float(confidences[1]['confidence'])
-						incorrectTotal+=1
-				total+=1
+					correct += float(confidences[1]['confidence'])
+					correctTotal+=1
+			else:
+				confidences = classifier_dict[int(total)]['classes']
+				if confidences[0]['class_name'] == str(classifier_dict[int(total)]['top_class']):
+					incorrect += float(confidences[0]['confidence'])
+					incorrectTotal+=1
+				else:
+					incorrect += float(confidences[1]['confidence'])
+					incorrectTotal+=1
+			total+=1
 
 
 	csvfile.close()
@@ -313,13 +309,25 @@ def compute_average_confidence_of_single_classifier(classifier_dict, input_csv_f
 if __name__ == "__main__":
 
 	input_test_data = '<ADD FILE NAME HERE>'
-
+	accuracy = [0,0,0]
+	confidence = [[],[],[]]
 	ids = get_classifier_ids('"7422dc1e-036c-4376-9410-c5aae79bed98"',  '"O06Y0bsqbXIX"')
 	#assert_all_classifiers_are_available('"7422dc1e-036c-4376-9410-c5aae79bed98"',  '"O06Y0bsqbXIX"', ids)
 	print classify_single_text('"7422dc1e-036c-4376-9410-c5aae79bed98"',  '"O06Y0bsqbXIX"',ids[0],"Not so hungry anymore!")
 	dict = classify_all_texts('"7422dc1e-036c-4376-9410-c5aae79bed98"',  '"O06Y0bsqbXIX"',"/u/cs401/A1/tweets/testdata.manualSUBSET.2009.06.14.csv")
-	print compute_accuracy_of_single_classifier(dict['2500'], "/u/cs401/A1/tweets/testdata.manualSUBSET.2009.06.14.csv")
-	print compute_average_confidence_of_single_classifier(dict['2500'], "/u/cs401/A1/tweets/testdata.manualSUBSET.2009.06.14.csv")
+	count = 0
+	for classifier in ["500", '1000', "2500"]:
+		count+=1
+		print("Accuracy for classifier : "+classifier)
+		accuracy[count] = compute_accuracy_of_single_classifier(dict[classifier], "/u/cs401/A1/tweets/testdata.manualSUBSET.2009.06.14.csv")
+		print("Confidence for classifier : "+classifier)
+		confidence[count] = compute_average_confidence_of_single_classifier(dict[classifier], "/u/cs401/A1/tweets/testdata.manualSUBSET.2009.06.14.csv")
+	for classifier in ["500", '1000', "2500"]:
+		count+=1
+		print("Accuracy for classifier : "+classifier)
+		print (accuracy[count])
+		print("Confidence for classifier : "+classifier)
+		print (confidence[count])
 	#STEP 1: Ensure all 11 classifiers are ready for testing
 
 	

@@ -138,3 +138,8 @@ with open(sys.argv[1], 'rb') as csvfile:
         test.write("\n")
     test.close()
     print("done")
+
+
+word = ["pretty", "really", "so", "like"]
+tags = tagger.tag(word)
+print(tags)
