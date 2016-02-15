@@ -1,0 +1,69 @@
+The three features that retain their importance in both sets of data are the length of the token, first person pronouns, and second person pronouns. In the case of the first person pronouns, these would be classed as important the majority tweets issued by the Tweeter will be about themselves, where more often than not an emotion is portrayed in the tweet (e.g. I am sad or I am happy). Also, if an activity is described which the person took part in that was either in a group of people or on their own, an emotion will again be generated from this (e.g. We played soccer and it was awesome!). In regards to second person pronouns, it is very common for a Tweeter to tweet to friends and celebrities with how they feel about the other person (e.g. You tweet to Brad Pitt "You're a great actor!"), so this will again hold the connotation of emotion. For length of token, it might be worth noting that words that can describe emotion are generally longer in length, supported by the fact that adverbs were ranked 5th and 4th respectively in the tables below.
+
+
+=== Attribute Selection on all input data ===
+
+Search Method:
+	Attribute ranking.
+
+Attribute Evaluator (supervised, Class (nominal): 21 score):
+	Information Gain Ranking Filter
+
+Ranked attributes:
+ 0.02797   19 lengthOfToken
+ 0.02168    2 secondPersonPronouns
+ 0.0166     1 firstPersonPronouns
+ 0.01181    5 pastTenseVerbs
+ 0.01035   14 adverbs
+ 0.00676    4 coordinatingConjunctions
+ 0          8 colonsAndSemicolons
+ 0          9 dashes
+ 0          3 thirdPersonPronouns
+ 0          7 commas
+ 0          6 futureTenseVerbs
+ 0         17 upperCaseWords
+ 0         16 slang
+ 0         20 numberOfSentences
+ 0         18 lengthOfSentence
+ 0         11 ellipses
+ 0         10 parentheses
+ 0         15 whWords
+ 0         12 commonNouns
+ 0         13 properNouns
+
+Selected attributes: 19,2,1,5,14,4,8,9,3,7,6,17,16,20,18,11,10,15,12,13 : 20
+
+
+
+=== Attribute Selection on all input data ===
+
+Search Method:
+	Attribute ranking.
+
+Attribute Evaluator (supervised, Class (nominal): 21 score):
+	Information Gain Ranking Filter
+
+Ranked attributes:
+ 0.014469    1 firstPersonPronouns
+ 0.012091   19 lengthOfToken
+ 0.012022    2 secondPersonPronouns
+ 0.007023   14 adverbs
+ 0.005796   18 lengthOfSentence
+ 0.005122    5 pastTenseVerbs
+ 0.003813   13 properNouns
+ 0.003048   11 ellipses
+ 0.002051    4 coordinatingConjunctions
+ 0.001378   17 upperCaseWords
+ 0.001131   12 commonNouns
+ 0.000916    9 dashes
+ 0           6 futureTenseVerbs
+ 0           3 thirdPersonPronouns
+ 0          15 whWords
+ 0          20 numberOfSentences
+ 0          16 slang
+ 0           7 commas
+ 0          10 parentheses
+ 0           8 colonsAndSemicolons
+
+Selected attributes: 1,19,2,14,18,5,13,11,4,17,12,9,6,3,15,20,16,7,10,8 : 20
+

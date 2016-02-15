@@ -1,0 +1,16 @@
+Our accuracies varied quite considerably as the number of training samples increased. Our highest accuracy percentage was in fact when the training sample was at 5500, however our lowest occurred at 5000. While the accuracies varied as the training samples increased, there were a couple of times where the same percentage would be apparent in two different sample sizes (e.g. 1500 and 2500, 3000 and 3500). This varying in percentages could occur because as the sample size increases the number of total instances will of course rise. This in turn means that due to there being more data to work worth, the more of a chance the percentage difference between Correct and Incorrect Classified Instances could deviate. We therefore believe that as the sample size becomes greater, the more accurate the results will be.
+
+
+n	Accuracy(%)
+	
+500	50.838
+1000	51.676
+1500	51.3966
+2000	52.7933
+2500	51.3966
+3000	52.514
+3500	52.514
+4000	50.2793
+4500	50
+5000	49.162
+5500	53.6313
